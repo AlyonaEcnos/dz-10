@@ -3,7 +3,7 @@ from collections import UserDict
 class Field:
     def __init__(self, value):
         if not self.is_valid(value):
-            raise ValueError("Invalid value")
+            raise ValueError(f"Invalid {self.__class__.__name__.lower()} value")
         self.value = value
 
     def __str__(self):
@@ -18,11 +18,14 @@ class Name(Field):
 class Phone(Field):
     def __init__(self, value):
         super().__init__(value)
-        self.validate_phone()
+        self.validate()
 
-    def validate_phone(self):
-        if not (isinstance(self.value, str) and len(self.value) == 10 and self.value.isdigit()):
-            raise ValueError("Invalid phone number format")
+    def is_valid(self, value):
+        return isinstance(value, str) and len(value) == 10 and value.isdigit()
+
+    def validate(self):
+        if not self.is_valid(self.value):
+            raise ValueError(f"Invalid {self.__class__.__name__.lower()} format")
 
     def __str__(self):
         return str(self.value)
@@ -46,7 +49,7 @@ class Record:
         for p in self.phones:
             if p.value == old_phone:
                 p.value = new_phone
-                p.validate_phone()
+                p.validate()
                 return
         raise ValueError(f"Phone number '{old_phone}' not found")
 
