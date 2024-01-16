@@ -35,11 +35,11 @@ class Record:
             raise ValueError(f"Phone number '{phone}' not found")
 
     def edit_phone(self, old_phone, new_phone):
+        if not Phone(new_phone).is_valid(new_phone):
+            raise ValueError(f"Invalid phone number format for '{new_phone}'")
         for p in self.phones:
             if p.value == old_phone:
                 p.value = new_phone
-                if not p.is_valid(new_phone):
-                    raise ValueError(f"Invalid phone number format for '{new_phone}'")
                 return
         raise ValueError(f"Phone number '{old_phone}' not found")
 
