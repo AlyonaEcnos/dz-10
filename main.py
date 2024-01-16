@@ -16,19 +16,8 @@ class Name(Field):
     pass
 
 class Phone(Field):
-    def __init__(self, value):
-        super().__init__(value)
-        self.validate()
-
     def is_valid(self, value):
         return isinstance(value, str) and len(value) == 10 and value.isdigit()
-
-    def validate(self):
-        if not self.is_valid(self.value):
-            raise ValueError(f"Invalid {self.__class__.__name__.lower()} format")
-
-    def __str__(self):
-        return str(self.value)
 
 class Record:
     def __init__(self, name):
@@ -49,7 +38,8 @@ class Record:
         for p in self.phones:
             if p.value == old_phone:
                 p.value = new_phone
-                p.validate()
+                if not p.is_valid(new_phone):
+                    raise ValueError(f"Invalid phone number format for '{new_phone}'")
                 return
         raise ValueError(f"Phone number '{old_phone}' not found")
 
